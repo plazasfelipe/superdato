@@ -4,7 +4,6 @@ import json
 import os
 
 from flask import Flask, request
-from bot.mind import speak
 from bot.api import post_response, get_topics, get_insight, get_terms, get_insight_by_terms
 from bot.emoji import EmojiEngine
 from bot.options import Keyboard
