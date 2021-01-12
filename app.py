@@ -49,9 +49,8 @@ def main():
                 if message_text == '/start':
                     json_data = {
                         'chat_id': chat_id,
-                        'text': f'Hola {first_name} ¿Querés que SuperDato te asista en tu consulta?',
-                        'reply_markup': keyboard.yes_or_no('Dale! {emoji}'.format(emoji=emojis.get_emoji('sunglasses')),
-                                                           'Tranqui, puedo solo {emoji}'.format(emoji=emojis.get_emoji('nerd'))),
+                        'text': f'Hola {first_name}, este es el listado de temas de los que podemos hablar',
+                        'reply_markup': keyboard.topics(topics),
                     }
 
                 elif message_text == '/ayuda':
@@ -68,12 +67,10 @@ def main():
                     }
 
             else:
-                terms = speak(message_text, get_terms())
                 json_data = {
                     'chat_id': chat_id,
-                    'text': f'Sabias que {get_insight_by_terms(terms)}. \nQueres ver de nuevo los temas para preguntar algo mas?',
-                    'reply_markup': keyboard.yes_or_no('Dale! {emoji}'.format(emoji=emojis.get_emoji('smile')),
-                                                       'No, es todo por hoy{emoji}'.format(emoji=emojis.get_emoji('ok'))),
+                    'text': f'Hola {first_name}, este es el listado de temas de los que podemos hablar',
+                    'reply_markup': keyboard.topics(topics),
                 }
 
         else:
@@ -87,14 +84,14 @@ def main():
             elif callback_data == 'false':
                 json_data = {
                     'chat_id': chat_id,
-                    'text': 'Bueno, dejaré que lo hagas por tu cuenta{emoji}. Pero si por alguna razón llegas a necesitarme podes llamarme usando el comando /ayuda'.format(emoji=emojis.get_emoji('crying')),
+                    'text': 'Bueno... me hubiese gustado que hablaramos un poco más{emoji}'.format(emoji=emojis.get_emoji('crying')),
                 }
 
             else:
                 tema = data['callback_query']['data']
                 json_data = {
                     'chat_id': chat_id,
-                    'text': f'Sabias que {get_insight(tema)}. \nQueres ver de nuevo los temas para preguntar algo mas?',
+                    'text': f'Sabias que {get_insight(tema)}. \n\nQueres ver de nuevo los temas para preguntar algo mas?',
                     'reply_markup': keyboard.yes_or_no('Dale! {emoji}'.format(emoji=emojis.get_emoji('smile')),
                                                        'No, es todo por hoy{emoji}'.format(emoji=emojis.get_emoji('ok'))),
                 }
