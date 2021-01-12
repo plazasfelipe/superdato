@@ -2,7 +2,6 @@
 import requests
 import json
 import os
-from pprint import pprint
 
 from flask import Flask, request
 from bot.mind import speak
@@ -41,7 +40,6 @@ def main():
         date = data['callback_query']['message']['date']
         user_id = data['callback_query']['from']['id']
 
-    #pprint(data)
     post_response(user_id, date, data)
 
     if topic_selected is None:
