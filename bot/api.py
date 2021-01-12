@@ -12,8 +12,6 @@ def post_response(user, date, response):
     event = {'user':user, 'date':date, 'response':response}
     payload = json.dumps(event)
     response = requests.request("POST", url+'events', headers=headers, data=payload)
-    print("ok")
-
 
 def get_topics():
     payload = {}
