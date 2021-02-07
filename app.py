@@ -24,8 +24,6 @@ def main():
     keyboard = Keyboard()
     topics = get_topics()
 
-    print(data)
-
     global insight_graph
 
     try:
@@ -122,8 +120,8 @@ def main():
 
             json_data = {
                 'chat_id': chat_id,
-                'text': 'Queres hacer otra consulta?',
-                'reply_markup': keyboard.yes_or_no('Dale! {emoji}'.format(emoji=emojis.get_emoji('smile')),
+                'text': 'Querés hacer otra consulta?',
+                'reply_markup': keyboard.yes_or_no('Si! {emoji}'.format(emoji=emojis.get_emoji('smile')),
                                                     'No, es todo por ahora {emoji}'.format(emoji=emojis.get_emoji('ok'))),
             }
 
@@ -132,7 +130,7 @@ def main():
         else:
             json_data = {
                 'chat_id': chat_id,
-                'text': 'Queres hacer otra consulta?',
+                'text': 'Querés hacer otra consulta?',
                 'reply_markup': keyboard.yes_or_no('Si! {emoji}'.format(emoji=emojis.get_emoji('smile')),
                                                     'No, es todo por ahora {emoji}'.format(emoji=emojis.get_emoji('ok'))),
             }
