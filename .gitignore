@@ -194,6 +194,3 @@ dmypy.json
 
 # Mac
 .DS_Store
-
-# DB migration
-db.py

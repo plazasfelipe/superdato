@@ -22,13 +22,17 @@ def get_topics():
     return data
 
 def get_insight(topic):
-    payload = json.dumps({'topic':topic})
-    response = requests.request("GET", url+'insights', headers=headers, data=payload)
-    response_serialize = json.loads(response.text)
-    data = response_serialize['data']
-    insight = data['insight']
+    try:
+        payload = json.dumps({'topic':topic})
+        response = requests.request("GET", url+'insights', headers=headers, data=payload)
+        response_serialize = json.loads(response.text)
+        data = response_serialize['data']
+        insight = data['insight']
+        graph = data['graph']
 
-    return insight
+        return insight, graph
+    except:
+        pass
 
 def get_terms():
     payload = {}

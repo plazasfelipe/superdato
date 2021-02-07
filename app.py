@@ -4,7 +4,7 @@ import json
 import os
 
 from flask import Flask, request
-from bot.api import post_response, get_topics, get_insight, get_terms, get_insight_by_terms
+from bot.api import post_response, get_topics, get_insight
 from bot.emoji import EmojiEngine
 from bot.options import Keyboard
 from telegram import ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
@@ -14,7 +14,7 @@ BOT_URL = f'https://api.telegram.org/bot{os.environ["SUPERDATO_BOT_KEY"]}/'
 
 app = Flask(__name__)
 
-topic_selected = None
+insight_graph = None
 
 
 @app.route('/', methods=['POST'])
@@ -24,7 +24,9 @@ def main():
     keyboard = Keyboard()
     topics = get_topics()
 
-    global topic_selected
+    print(data)
+
+    global insight_graph
 
     try:
         chat_id = data['message']['chat']['id']
@@ -35,13 +37,13 @@ def main():
     except:
         chat_id = data['callback_query']['message']['chat']['id']
         callback_data = data['callback_query']['data']
-        callback_id = data['callback_query']['id']
+        #callback_id = data['callback_query']['id']
         date = data['callback_query']['message']['date']
         user_id = data['callback_query']['from']['id']
 
     post_response(user_id, date, data)
 
-    if topic_selected is None:
+    if insight_graph is None:
 
         if 'message' in data.keys():
             if 'entities' in data['message'].keys():
@@ -62,7 +64,7 @@ def main():
                 else:
                     json_data = {
                         'chat_id': chat_id,
-                        'text': 'Aún no conozco ese comando',
+                        'text': 'Aún no conozco ese comando... {emoji}'.format(emoji=emojis.get_emoji('knocked')),
                     }
 
             else:
@@ -82,17 +84,21 @@ def main():
 
             elif callback_data == 'false':
                 json_data = {
-                    'chat_id': chat_id,
-                    'text': 'Bueno... me hubiese gustado que hablaramos un poco más{emoji}'.format(emoji=emojis.get_emoji('crying')),
+                'chat_id': chat_id,
+                'text': 'Bueno... me hubiese gustado que hablaramos un poco más{emoji}'.format(emoji=emojis.get_emoji('crying')),           
                 }
 
             else:
-                tema = data['callback_query']['data']
+                topic_selected = data['callback_query']['data']
+                insight = get_insight(topic_selected)
+                insight_selected = insight[0]
+                insight_graph = insight[1]
+
                 json_data = {
                     'chat_id': chat_id,
-                    'text': f'Sabias que {get_insight(tema)}. \n\nQueres ver de nuevo los temas para preguntar algo mas?',
-                    'reply_markup': keyboard.yes_or_no('Dale! {emoji}'.format(emoji=emojis.get_emoji('smile')),
-                                                       'No, es todo por hoy{emoji}'.format(emoji=emojis.get_emoji('ok'))),
+                    'text': f'Sabias que {insight_selected}. \n\nTe gustaría graficar esto en una serie de tiempo?',
+                    'reply_markup': keyboard.graph('Dale! {emoji}'.format(emoji=emojis.get_emoji('nerd')),
+                                                        'No, mejor después {emoji}'.format(emoji=emojis.get_emoji('neutral'))),
                 }
 
                 # json_data = {
@@ -105,11 +111,32 @@ def main():
                 # requests.post(message_url, json=json_data)
 
     else:
-        json_data = {
-            'chat_id': chat_id,
-            'text': 'Queres hacer otra consulta',
-        }
-        topic_selected = None
+        if callback_data == 'graph':
+            json_data = {
+                'chat_id': chat_id,
+                'photo': f'https://superdato-img.s3.amazonaws.com/{insight_graph}',
+            }
+            message_url = BOT_URL + 'sendPhoto'
+            requests.post(message_url, json=json_data)
+            
+
+            json_data = {
+                'chat_id': chat_id,
+                'text': 'Queres hacer otra consulta?',
+                'reply_markup': keyboard.yes_or_no('Dale! {emoji}'.format(emoji=emojis.get_emoji('smile')),
+                                                    'No, es todo por ahora {emoji}'.format(emoji=emojis.get_emoji('ok'))),
+            }
+
+            insight_graph = None
+
+        else:
+            json_data = {
+                'chat_id': chat_id,
+                'text': 'Queres hacer otra consulta?',
+                'reply_markup': keyboard.yes_or_no('Si! {emoji}'.format(emoji=emojis.get_emoji('smile')),
+                                                    'No, es todo por ahora {emoji}'.format(emoji=emojis.get_emoji('ok'))),
+            }
+            insight_graph = None
 
     message_url = BOT_URL + 'sendMessage'
     requests.post(message_url, json=json_data)

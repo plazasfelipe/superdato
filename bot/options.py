@@ -28,12 +28,12 @@ class Keyboard():
 
         return json.dumps(keyboard.to_dict())
 
-    def yes_or_no_date(self, true_str, false_str):
+    def graph(self, true_str, false_str):
         self.true_str = true_str
         self.false_str = false_str
 
-        buttons = [InlineKeyboardButton(self.true_str, callback_data='true_date'),
-                   InlineKeyboardButton(self.false_str, callback_data='false_date')]
+        buttons = [InlineKeyboardButton(self.true_str, callback_data='graph'),
+                   InlineKeyboardButton(self.false_str, callback_data='no_graph')]
 
         keyboard = InlineKeyboardMarkup(self.__buttons_per_rows(buttons, 2))
 
