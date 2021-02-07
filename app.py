@@ -96,7 +96,7 @@ def main():
                     'chat_id': chat_id,
                     'text': f'Sabias que {insight_selected}. \n\nTe gustaría graficar esto en una serie de tiempo?',
                     'reply_markup': keyboard.graph('Dale! {emoji}'.format(emoji=emojis.get_emoji('nerd')),
-                                                        'No, mejor después {emoji}'.format(emoji=emojis.get_emoji('neutral'))),
+                                                        'Mmm... No {emoji}'.format(emoji=emojis.get_emoji('neutral'))),
                 }
 
                 # json_data = {
