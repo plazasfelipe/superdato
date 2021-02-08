@@ -24,7 +24,7 @@ class Keyboard():
         buttons = [InlineKeyboardButton(self.true_str, callback_data='true'),
                    InlineKeyboardButton(self.false_str, callback_data='false')]
 
-        keyboard = InlineKeyboardMarkup(self.__buttons_per_rows(buttons, 2))
+        keyboard = InlineKeyboardMarkup(self.__buttons_per_rows(buttons, 1))
 
         return json.dumps(keyboard.to_dict())
 
